@@ -10,10 +10,7 @@
   * bulge chasing (by B. Lang), an  O(N*N*bs) algorithm for diagonalization
   * bisection for singular values
   * twisted factorization (RRR relatively robust representation)
-
-  TODO:
-  MRRR ... multiple RRR
-  degegenerate cases (with intermediate zeros)
+  * Multiple Relatively Robust Representations
 */
 
 
@@ -2460,7 +2457,6 @@ namespace ngbla
 
   // T_GK = LDL^T factorization of Golub-Kahan matrix
   // store as singular vectors u and v
-  // TODO: remove position?
   void getvecGK(FlatVector<> L, FlatVector<> D, double eval,
                   FlatVector<> u, FlatVector<> v, int position=0, bool rqi=0)
   {
@@ -3467,7 +3463,7 @@ namespace ngbla
       static Timer tmultUV("CalcSVD, mult U1*UB, V1*VB");
       RegionTimer regUV(tmultUV);
       tmultUV.AddFlops (n*n*n+m*m*m);
-      U = U1.Cols(n)*UB; // TODO: wrong size
+      U = U1.Cols(n)*UB; 
       V = V1*VB;
     }
 
@@ -3491,8 +3487,6 @@ namespace ngbla
   }
 
 
-  // TODO: remove
-  // just for testing
   template <ORDERING ORD>
   void TBidiag (SliceMatrix<double,ORD> A,
                  SliceMatrix<double, ColMajor> U,
@@ -3556,7 +3550,6 @@ namespace ngbla
   }
 
 
-  // TODO: remove
   template <ORDERING ORD>
   void TDiagonalize (SliceMatrix<double, ORD> A,
                   SliceMatrix<double, ColMajor> U,
