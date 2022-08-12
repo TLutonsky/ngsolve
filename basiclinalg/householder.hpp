@@ -12,19 +12,19 @@ namespace ngbla
 
 
 
-  
+
   // find Householder reflection vector v such that
   // reflection matrix H_v = I - 2 v v^T / (v^T v)
   // leads to H_v x = +/- e_0 ||x||
-  // scaling such that v(0) = 1   
+  // scaling such that v(0) = 1
   // returns (H_v x)(0) = +/- ||x||
   extern NGS_DLL_HEADER double CalcHouseholderVectorInPlace (SliceVector<> x);
 
-  
+
   // find Householder reflection vector v such that
   // reflection matrix H_v = I - 2 v v^T / (v^T v)
   // leads to H_v x = +/- e_0
-  // scaling such that v(0) = 1   
+  // scaling such that v(0) = 1
   inline void CalcHouseholderVector (SliceVector<> x, FlatVector<> v)
   {
     v = x;
@@ -32,7 +32,7 @@ namespace ngbla
   }
 
 
-  
+
   class NGS_DLL_HEADER HouseholderReflection
   {
     FlatVector<> v;
@@ -56,12 +56,12 @@ namespace ngbla
     HouseholderReflection1 (SliceVector<> av);
 
     template <ORDERING ORD>
-    void TMult (SliceMatrix<double,ORD> m2) const; 
+    void TMult (SliceMatrix<double,ORD> m2) const;
     void Mult (SliceMatrix<double,RowMajor> m2) const { TMult(m2); }
     void Mult (SliceMatrix<double,ColMajor> m2) const { TMult(m2); }
   };
 
-  
+
   // H = H_{m-1} ... H_1 H_0 = I - V^T T V
   template <ORDERING OMV>
   class BaseMultiHouseholderReflection
@@ -75,16 +75,16 @@ namespace ngbla
     void CalcT();
     template <ORDERING ORD>
     void TMult (SliceMatrix<double,ORD> m2) const;  // Hm-1 * ... * H1 * H0 * m2
-    void Mult (SliceMatrix<double, RowMajor> m2) const { TMult (m2); } 
+    void Mult (SliceMatrix<double, RowMajor> m2) const { TMult (m2); }
     void Mult (SliceMatrix<double, ColMajor> m2) const { TMult (m2); }
 
     template <ORDERING ORD>
-    void TMultTrans (SliceMatrix<double,ORD> m2) const; 
+    void TMultTrans (SliceMatrix<double,ORD> m2) const;
     void MultTrans (SliceMatrix<double,RowMajor> m2) const { TMultTrans(m2); }
     void MultTrans (SliceMatrix<double,ColMajor> m2) const { TMultTrans(m2); }
   };
 
-  template <ORDERING OMV>  
+  template <ORDERING OMV>
   class MultiHouseholderReflection : public BaseMultiHouseholderReflection<OMV>
   {
     ArrayMem<double, 96*96> mem;
@@ -97,7 +97,7 @@ namespace ngbla
       }
   };
 
-  template <ORDERING OMV>  
+  template <ORDERING OMV>
   class MultiHouseholderReflectionMem : public BaseMultiHouseholderReflection<OMV>
   {
   public:
@@ -108,7 +108,7 @@ namespace ngbla
         this->CalcT();
       }
   };
-  
+
 
 
   // H is a generalized, normalized, lower left triangular matrix
@@ -143,9 +143,9 @@ namespace ngbla
 
     if (n > m) throw Exception("ApplyHouseholderReflections, n > m");
     if (n == 0) return;
-    
+
     // for (size_t i = 0; i < n; i += bs)
-    double mem[bs*bs];    
+    double mem[bs*bs];
     for (size_t i = n; i+bs > bs; i -= bs)
       {
         size_t first = max(bs, i)-bs;
@@ -155,8 +155,8 @@ namespace ngbla
       }
   }
 
-  
-  
+
+
   /*
     Factorize A = Q R
     A is m x n, overwritten by R
@@ -168,14 +168,43 @@ namespace ngbla
   extern NGS_DLL_HEADER void QRFactorizationInPlace (SliceMatrix<double,ColMajor> A);
 
   extern NGS_DLL_HEADER void InverseFromQR (SliceMatrix<double> A);
-  
-  extern NGS_DLL_HEADER void CalcSVD (SliceMatrix<double, RowMajor> A, 
+
+  extern NGS_DLL_HEADER void CalcSVD (SliceMatrix<double, RowMajor> A,
                                       SliceMatrix<double, ColMajor> U,
                                       SliceMatrix<double, ColMajor> V);
-  
-  extern NGS_DLL_HEADER void CalcSVD (SliceMatrix<double, ColMajor> A, 
+
+  extern NGS_DLL_HEADER void CalcSVD (SliceMatrix<double, ColMajor> A,
                                       SliceMatrix<double, ColMajor> U,
                                       SliceMatrix<double, ColMajor> V);
+
+
+  extern NGS_DLL_HEADER void CalcSVD (SliceMatrix<double, RowMajor> A);
+
+  extern NGS_DLL_HEADER void CalcSVD (SliceMatrix<double, RowMajor> A);
+
+  extern NGS_DLL_HEADER int LowRankSVD (SliceMatrix<double,RowMajor> A,
+                                        SliceMatrix<double, ColMajor> U,
+                                        SliceMatrix<double, ColMajor> V,
+                                        size_t kmax=-1, double eps=0, string method="");
+
+  extern NGS_DLL_HEADER int LowRankSVD (SliceMatrix<double,ColMajor> A,
+                                        SliceMatrix<double, ColMajor> U,
+                                        SliceMatrix<double, ColMajor> V,
+                                        size_t kmax=-1, double eps=0, string method="");
+
+  // just for testing
+  extern NGS_DLL_HEADER void Bidiagonalize (SliceMatrix<double,RowMajor> A,
+                                               SliceMatrix<double, ColMajor> U,
+                                               SliceMatrix<double, ColMajor> V,
+                                               bool blocked);
+
+  // just for testing
+  extern NGS_DLL_HEADER void Bidiagonalize (SliceMatrix<double,ColMajor> A,
+                                               SliceMatrix<double, ColMajor> U,
+                                               SliceMatrix<double, ColMajor> V,
+                                               bool blocked);
+
+
 }
 
 #endif
